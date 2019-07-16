@@ -20,9 +20,13 @@
   </header>
 
   <div class="content">
-    <img
-      [alt]="book.volumeInfo?.title"
-      [src]="bookImage"/>
+    <div class="banner">
+      <img
+        [alt]="book.volumeInfo?.title"
+        [src]="bookImage"/>
+    </div>
+
+    <div class="description" [innerHTML]="book.volumeInfo.description"></div>
 
     <div class="info">
       <h4>Volume info</h4>
@@ -44,9 +48,9 @@
           {{ book.volumeInfo.publishedDate }}
         </li>
       </ul>
+    </div>
 
-      <br>
-
+    <div class="sale-info">
       <h4>
         Sale info
         <a
@@ -63,8 +67,5 @@
         </li>
       </ul>
     </div>
-
-    <p class="description" [innerHTML]="book.volumeInfo.description"></p>
-
   </div>
 </article>
