@@ -1,0 +1,12 @@
+header {
+  margin-top: 1rem;
+}
+
+.load-more {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.load-more button {
+  font-size: 120%;
+}

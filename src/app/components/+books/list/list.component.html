@@ -1,0 +1,27 @@
+<header>
+  <h1>{{ title }}</h1>
+</header>
+
+<div *ngIf="books && books.length; else booksOverlay">
+  <app-books-card
+    *ngFor="let book of books"
+    [book]="book">
+  </app-books-card>
+
+  <div class="load-more">
+    <button
+      role="button"
+      (click)="loadMore.emit(true)">
+      Load more
+    </button>
+  </div>
+</div>
+
+<ng-template #booksOverlay>
+  <p *ngIf="!books">
+    Loading books...
+  </p>
+  <p *ngIf="books && !books.length">
+    Books not found. Try another query.
+  </p>
+</ng-template>
