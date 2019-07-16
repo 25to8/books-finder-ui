@@ -42,10 +42,10 @@ export class BooksService {
     }).pipe(
       switchMap((data: IGetVolumesList) => {
         const items = data.items || [];
+        const favorites = this.favoritesCache$.getValue();
         const books = items.map(book => {
           // Check each a book, if it is true
           // mark model as favorite
-          const favorites = this.favoritesCache$.getValue();
           const isFavorite = favorites.findIndex(
             favorite => book.id === favorite.id
           );
