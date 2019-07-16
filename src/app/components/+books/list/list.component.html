@@ -18,10 +18,15 @@
 </div>
 
 <ng-template #booksOverlay>
-  <p *ngIf="!books">
+  <p *ngIf="!books && !errorMessage">
     Loading books...
   </p>
   <p *ngIf="books && !books.length">
     Books not found. Try another query.
+  </p>
+  <p
+    *ngIf="errorMessage && !books"
+    [style.color]="'red'"
+    [innerText]="errorMessage">
   </p>
 </ng-template>

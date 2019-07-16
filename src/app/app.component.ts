@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { BooksService } from './services/books.service';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { BookModel } from './models/book.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const LOAD_MORE_STEP = 3;
 
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   books$ = new BehaviorSubject<BookModel[]>(null);
   favoritesBooks$ = new Observable<BookModel[]>();
+  errorMessage$ = new BehaviorSubject<string>(null);
 
   // I use that instead takeUntil
   // because in this component
@@ -46,20 +48,25 @@ export class AppComponent implements OnInit, OnDestroy {
       query,
       this.startIndex,
       this.maxResults,
-    ).subscribe(books => {
-      // Refresh books for new search
-      if (forced) {
-        this.books$.next(books);
-        return;
-      }
+    ).subscribe(
+      books => {
+        // Refresh books for new search
+        if (forced) {
+          this.books$.next(books);
+          return;
+        }
 
-      // Complete books for load more
-      const latestLoadedBooks = this.books$.getValue();
-      this.books$.next([
-        ...latestLoadedBooks,
-        ...books
-      ]);
-    });
+        // Complete books for load more
+        const latestLoadedBooks = this.books$.getValue();
+        this.books$.next([
+          ...latestLoadedBooks,
+          ...books
+        ]);
+      },
+      (error: HttpErrorResponse) => {
+        this.errorMessage$.next(error.message);
+      }
+    );
   }
 
   /**

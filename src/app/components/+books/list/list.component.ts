@@ -9,6 +9,7 @@ import { BookModel } from '../../../models/book.model';
 export class BooksListComponent implements OnInit {
   @Input() title = 'Books';
   @Input() books: BookModel[];
+  @Input() errorMessage: string;
 
   @Output() loadMore = new EventEmitter<boolean>();
 

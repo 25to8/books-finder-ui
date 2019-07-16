@@ -8,6 +8,7 @@
     <app-search (search)="search($event)"></app-search>
     <app-books-list
       [books]="books$ | async"
+      [errorMessage]="errorMessage$ | async"
       (loadMore)="loadMore()">
     </app-books-list>
   </ng-container>
