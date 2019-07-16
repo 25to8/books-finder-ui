@@ -1,22 +1,6 @@
 <article class="book-card">
   <header>
     <h3>{{ book.volumeInfo?.title }}</h3>
-    <button
-      *ngIf="!book.isFavorite; else removeFavorite"
-      class="favorite-btn"
-      type="button"
-      (click)="booksService.saveToFavorites(book)">
-      Save to favorites
-    </button>
-
-    <ng-template #removeFavorite>
-      <button
-        class="favorite-btn"
-        type="button"
-        (click)="booksService.removeFromFavorites(book)">
-        Remove from favorites
-      </button>
-    </ng-template>
   </header>
 
   <div class="content">
@@ -24,6 +8,21 @@
       <img
         [alt]="book.volumeInfo?.title"
         [src]="bookImage"/>
+
+      <button
+        *ngIf="!book.isFavorite; else removeFavorite"
+        type="button"
+        (click)="booksService.saveToFavorites(book)">
+        Save to favorites
+      </button>
+
+      <ng-template #removeFavorite>
+        <button
+          type="button"
+          (click)="booksService.removeFromFavorites(book)">
+          Remove from favorites
+        </button>
+      </ng-template>
     </div>
 
     <div class="description" [innerHTML]="book.volumeInfo.description"></div>
