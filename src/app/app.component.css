@@ -1,0 +1,14 @@
+section[role='main'] {
+
+}
+
+nav {
+  margin: 1rem 0;
+}
+
+nav a {
+  padding-right: 0.4rem;
+  color: cornflowerblue;
+  text-decoration: underline;
+  cursor: pointer;
+}
