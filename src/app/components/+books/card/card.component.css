@@ -1,0 +1,33 @@
+.book-card {
+  padding: 1rem 0;
+  border-bottom: 1px solid #cccccc;
+}
+
+header {
+  margin: 1rem 0;
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.banner, .info, .description {
+  margin: 0 1rem;
+}
+
+.banner {
+  flex-basis: 20%;
+}
+
+.info {
+  flex-basis: 30%;
+}
+
+.description {
+  flex-basis: 50%;
+}
+
+.favorite-btn {
+  font-size: 120%;
+}

@@ -1,0 +1,70 @@
+<article class="book-card">
+  <header>
+    <h3>{{ book.volumeInfo?.title }}</h3>
+    <button
+      *ngIf="!book.isFavorite; else removeFavorite"
+      class="favorite-btn"
+      type="button"
+      (click)="booksService.saveToFavorites(book)">
+      Save to favorites
+    </button>
+
+    <ng-template #removeFavorite>
+      <button
+        class="favorite-btn"
+        type="button"
+        (click)="booksService.removeFromFavorites(book)">
+        Remove from favorites
+      </button>
+    </ng-template>
+  </header>
+
+  <div class="content">
+    <img
+      [alt]="book.volumeInfo?.title"
+      [src]="bookImage"/>
+
+    <div class="info">
+      <h4>Volume info</h4>
+      <ul>
+        <li>
+          <strong>Categories:</strong>
+          {{ book.volumeInfo.categories?.toString() }}
+        </li>
+        <li>
+          <strong>Authors:</strong>
+          {{ book.volumeInfo.authors?.toString() }}
+        </li>
+        <li>
+          <strong>Publisher:</strong>
+          {{ book.volumeInfo.publisher }}
+        </li>
+        <li>
+          <strong>Published date:</strong>
+          {{ book.volumeInfo.publishedDate }}
+        </li>
+      </ul>
+
+      <br>
+
+      <h4>
+        Sale info
+        <a
+          *ngIf="book.saleInfo.buyLink"
+          [href]="book.saleInfo.buyLink">
+          Buy
+        </a>
+      </h4>
+      <ul>
+        <li>
+          <strong>Market price:</strong>
+          {{ book.saleInfo.listPrice?.amount }}
+          {{ book.saleInfo.listPrice?.currencyCode }}
+        </li>
+      </ul>
+    </div>
+
+    <p class="description" [innerHTML]="book.volumeInfo.description"></p>
+
+  </div>
+</article>
