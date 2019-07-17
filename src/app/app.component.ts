@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { BooksService } from './services/books.service';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { BookModel } from './models/book.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { catchError, map, takeUntil } from 'rxjs/operators';
+import { BooksService } from './services/books.service';
+import { BookModel } from './models/book.model';
 
 const LOAD_MORE_STEP = 3;
 
@@ -25,10 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
   favoritesBooks$ = new Observable<BookModel[]>();
   errorMessage$ = new BehaviorSubject<string>(null);
 
-  // I use that instead takeUntil
-  // because in this component
-  // we have only one subscription
-  private booksSubscription$: Subscription;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private booksService: BooksService
@@ -39,34 +37,38 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.booksSubscription$.unsubscribe();
+    this.destroy$.next(); //  Unsubscribe from observables.
+    this.destroy$.complete(); // Unsubscribe from ngUnsubscribe.
   }
 
   search(query: string, forced = true): void {
     this.queryCache = query;
-    this.booksSubscription$ = this.booksService.fetchVolumesList(
+    this.booksService.fetchVolumesList(
       query,
       this.startIndex,
       this.maxResults,
-    ).subscribe(
-      books => {
+    ).pipe(
+      takeUntil(this.destroy$),
+      map(books => {
         // Refresh books for new search
         if (forced) {
-          this.books$.next(books);
-          return;
+          return books;
         }
 
         // Complete books for load more
         const latestLoadedBooks = this.books$.getValue();
-        this.books$.next([
+        return [
           ...latestLoadedBooks,
           ...books
-        ]);
-      },
-      (error: HttpErrorResponse) => {
+        ];
+      }),
+      catchError((error: HttpErrorResponse) => {
         this.errorMessage$.next(error.message);
-      }
-    );
+        return throwError(error);
+      })
+    ).subscribe(books => {
+      this.books$.next(books);
+    });
   }
 
   /**
