@@ -67,7 +67,7 @@ export class BooksService {
    * Save book to favorites list
    */
   saveToFavorites(book: BookModel): void {
-    const favorites = this.favoritesCache$.getValue() || [];
+    const favorites = this.favoritesCache$.getValue();
     book.isFavorite = true;
 
     try {
@@ -86,7 +86,7 @@ export class BooksService {
    * Remove book from favorites
    */
   removeFromFavorites(book: BookModel): void {
-    const favorites = this.favoritesCache$.getValue() || [];
+    const favorites = this.favoritesCache$.getValue();
     const updatedList = favorites.filter(
       favorite => favorite.id !== book.id
     );
@@ -108,7 +108,7 @@ export class BooksService {
   private fetchFavorites(): void {
     try {
       const favorites = localStorage.getItem(FAVORITES_LS_KEY);
-      this.favoritesCache$.next(JSON.parse(favorites));
+      this.favoritesCache$.next(favorites ? JSON.parse(favorites) : []);
     } catch (e) {
       console.error('Cannot load favorites from localStorage');
     }
