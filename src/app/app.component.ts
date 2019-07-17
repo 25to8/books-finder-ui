@@ -44,6 +44,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   search(query: string, forced = true): void {
+    if (this.queryCache === query && forced) {
+      return;
+    }
+
     this.queryCache = query;
     this.booksService.fetchVolumesList(
       query,
