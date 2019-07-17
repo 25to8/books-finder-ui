@@ -29,10 +29,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   listenQueryChanges(): void {
     this.queryChanges$ = this.queryControl.valueChanges.pipe(
-      debounceTime(800),
+      debounceTime(1200),
       distinctUntilChanged()
     ).subscribe(value => {
-      this.search.emit(value ? value : `You don't know JS`);
+      this.search.emit(value);
     });
   }
 }

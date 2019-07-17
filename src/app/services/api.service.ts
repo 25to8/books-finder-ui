@@ -13,7 +13,11 @@ export class ApiService {
   ) { }
 
   get(route: string, queryParams: object): Observable<any> {
-    let params = new HttpParams().set('key', environment.apiKey);
+    let params = new HttpParams();
+
+    if (environment.apiKey) {
+      params = params.append('key', environment.apiKey);
+    }
 
     Object.keys(queryParams).forEach(
       key => params = params.append(key, queryParams[key])
