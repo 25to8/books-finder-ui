@@ -48,15 +48,15 @@ export class BooksService {
           // mark model as favorite
           const isFavorite = favorites.findIndex(
             favorite => book.id === favorite.id
-          );
+          ) > -1;
 
-          return new BookModel(book, isFavorite > -1);
+          return new BookModel(book, isFavorite);
         });
 
         this.volumesCache$.next(books);
         return of(books);
       }),
-      catchError((error, _) => {
+      catchError((error) => {
         console.error('This error is caught on booksService level');
         return throwError(error);
       })
