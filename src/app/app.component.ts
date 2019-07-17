@@ -23,7 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isFavoritesScreen = false;
 
   books$ = new BehaviorSubject<BookModel[]>(null);
-  favoritesBooks$ = new Observable<BookModel[]>();
+  favoriteBooks$ = new Observable<BookModel[]>();
   errorMessage$ = new BehaviorSubject<string>(null);
 
   private destroy$ = new Subject<void>();
@@ -33,7 +33,9 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.favoritesBooks$ = this.booksService.favoritesCache$.asObservable();
+    this.favoriteBooks$ = this.booksService.favoritesCache$.pipe(
+      takeUntil(this.destroy$)
+    );
   }
 
   ngOnDestroy(): void {
