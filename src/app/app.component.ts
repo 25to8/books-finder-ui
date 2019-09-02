@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
-import { catchError, map, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, Subject, throwError, zip } from 'rxjs';
+import { catchError, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BooksService } from './services/books.service';
 import { BookModel } from './models/book.model';
 
@@ -22,6 +22,11 @@ export class AppComponent implements OnInit, OnDestroy {
   // Default page screen
   isFavoritesScreen = false;
 
+  // Primary UI events subjects
+  loadMore$ = new BehaviorSubject<any>(null);
+  search$ = new BehaviorSubject<any>(null);
+
+  // Data subjects
   books$ = new BehaviorSubject<BookModel[]>(null);
   favoriteBooks$ = new Observable<BookModel[]>();
   errorMessage$ = new BehaviorSubject<string>(null);
@@ -36,6 +41,32 @@ export class AppComponent implements OnInit, OnDestroy {
     this.favoriteBooks$ = this.booksService.favoritesCache$.pipe(
       takeUntil(this.destroy$)
     );
+
+    // Combine primary app events and handle it
+    combineLatest(
+      this.search$,
+      this.loadMore$
+    ).pipe(
+      // If it isn't query cache or loading more call
+      // else user will see results from cache
+      filter(([query, loadMore]) => !(this.queryCache === query && !loadMore)),
+      switchMap(([query, loadMore]) => {
+
+        // Is loadMore event?
+        if (this.queryCache === query && loadMore) {
+          this.loadMore(query);
+          return of(null);
+        }
+
+        // It's search event
+        return of(query);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe((searchQuery) => {
+      if (searchQuery) {
+        this.search(searchQuery);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -81,9 +112,12 @@ export class AppComponent implements OnInit, OnDestroy {
    * Load more books with start index
    * equals loaded books count
    */
-  loadMore(): void {
+  loadMore(query): void {
     this.startIndex += LOAD_MORE_STEP;
-    this.search(this.queryCache, false);
+    this.search(
+      query ? query : this.queryCache,
+      false
+    );
   }
 
   toggleFavoritesScreen(): void {

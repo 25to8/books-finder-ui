@@ -5,11 +5,11 @@
   </nav>
 
   <ng-container *ngIf="!isFavoritesScreen; else favoritesBooks">
-    <app-search (search)="search($event)"></app-search>
+    <app-search (search)="search$.next($event)"></app-search>
     <app-books-list
       [books]="books$ | async"
       [errorMessage]="errorMessage$ | async"
-      (loadMore)="loadMore()">
+      (loadMore)="loadMore$.next($event)">
     </app-books-list>
   </ng-container>
 
