@@ -1,6 +1,6 @@
 {
-  "name": "top10-google-books",
-  "version": "0.0.1",
+  "name": "books-finder-ui",
+  "version": "0.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
